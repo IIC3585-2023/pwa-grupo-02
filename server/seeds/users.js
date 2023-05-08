@@ -1,11 +1,12 @@
 const factory = require('../models/factories/index.js');
-const { User, Like } = require('../models/index.js');
+const { User, Like, Message } = require('../models/index.js');
 
 const seedUsers = {
   up: async () => {
     // delete all old users
-    await User.destroy({ where: {} });
     await Like.destroy({ where: {} });
+    await Message.destroy({ where: {} });
+    await User.destroy({ where: {} });
 
     const users = [factory.create('User', {
       id: 1,
