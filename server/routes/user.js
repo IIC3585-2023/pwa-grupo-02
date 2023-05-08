@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { Op } = require('sequelize');
-const { User, Like } = require('../models');
+const { User, Like, Message } = require('../models');
 
 const router = Router();
 
@@ -74,6 +74,37 @@ router.post('/:id/likes', async (req, res) => {
   });
 
   res.json(like);
+});
+
+router.get('/:id/messages/:userId', async (req, res) => {
+  const messagesSent = await Message.findAll({
+    where: {
+      userId: req.params.id,
+      receiverUserId: req.params.userId,
+    },
+  });
+
+  const messagesReceived = await Message.findAll({
+    where: {
+      userId: req.params.userId,
+      receiverUserId: req.params.id,
+    },
+  });
+
+  const messages = messagesSent.concat(messagesReceived);
+  messages.sort((a, b) => a.createdAt - b.createdAt);
+
+  res.json(messages);
+});
+
+router.post('/:id/messages/:userId', async (req, res) => {
+  const message = await Message.create({
+    userId: req.params.id,
+    receiverUserId: req.params.userId,
+    message: req.body.message,
+  });
+
+  res.json(message);
 });
 
 module.exports = router;
