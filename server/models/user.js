@@ -17,6 +17,18 @@ module.exports = (sequelize, DataTypes) => {
           name: 'likedUserId',
         },
       });
+      this.hasMany(models.Message, {
+        as: 'messagesSent',
+        foreignKey: {
+          name: 'userId',
+        },
+      });
+      this.hasMany(models.Message, {
+        as: 'MessagesReceived',
+        foreignKey: {
+          name: 'receiverUserId',
+        },
+      });
     }
   }
   User.init({
