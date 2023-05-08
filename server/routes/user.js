@@ -26,6 +26,7 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500);
+    res.json({ error: 'Something went wrong' });
   }
 });
 
@@ -90,6 +91,7 @@ router.post('/:id/likes', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500);
+    res.json({ error: 'Something went wrong' });
   }
 });
 
@@ -126,6 +128,41 @@ router.post('/:id/messages/:userId', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500);
+    res.json({ error: 'Something went wrong' });
+  }
+});
+
+router.get('/:id/matches', async (req, res) => {
+  try {
+    const likes = await Like.findAll({
+      where: {
+        likedUserId: req.params.id,
+      },
+    });
+
+    const liked = await Like.findAll({
+      where: {
+        userId: req.params.id,
+      },
+    });
+
+    const matches = likes.filter((like) => {
+      const likedUser = liked.find((l) => l.likedUserId === like.userId);
+      return likedUser;
+    });
+
+    const users = await Promise.all(
+      matches.map(async (match) => {
+        const user = await User.findByPk(match.userId);
+        return user;
+      }),
+    );
+
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    res.json({ error: 'Something went wrong' });
   }
 });
 
