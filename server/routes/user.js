@@ -10,17 +10,22 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const user = await User.findOne({
-    where: {
-      email: req.body.email,
-      password: req.body.password,
-    },
-  });
+  try {
+    const user = await User.findOne({
+      where: {
+        email: req.body.email,
+        password: req.body.password,
+      },
+    });
 
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ error: 'User not found' });
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500);
   }
 });
 
@@ -45,8 +50,11 @@ router.get('/:id/likes', async (req, res) => {
       },
     ],
   });
-
-  res.json(user.likes);
+  if (user) {
+    res.json(user.likes);
+    return;
+  }
+  res.status(404).json({ error: 'User not found' });
 });
 
 router.get('/:id/liked', async (req, res) => {
@@ -62,18 +70,27 @@ router.get('/:id/liked', async (req, res) => {
       },
     ],
   });
-  res.json(user.liked);
+  if (user) {
+    res.json(user.liked);
+    return;
+  }
+  res.status(404).json({ error: 'User not found' });
 });
 
 router.post('/:id/likes', async (req, res) => {
-  const user = await User.findByPk(req.params.id);
-  const likedUser = await User.findByPk(req.body.likedUserId);
-  const like = await Like.create({
-    userId: user.id,
-    likedUserId: likedUser.id,
-  });
+  try {
+    const user = await User.findByPk(req.params.id);
+    const likedUser = await User.findByPk(req.body.likedUserId);
+    const like = await Like.create({
+      userId: user.id,
+      likedUserId: likedUser.id,
+    });
 
-  res.json(like);
+    res.json(like);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+  }
 });
 
 router.get('/:id/messages/:userId', async (req, res) => {
@@ -98,13 +115,18 @@ router.get('/:id/messages/:userId', async (req, res) => {
 });
 
 router.post('/:id/messages/:userId', async (req, res) => {
-  const message = await Message.create({
-    userId: req.params.id,
-    receiverUserId: req.params.userId,
-    message: req.body.message,
-  });
+  try {
+    const message = await Message.create({
+      userId: req.params.id,
+      receiverUserId: req.params.userId,
+      message: req.body.message,
+    });
 
-  res.json(message);
+    res.json(message);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+  }
 });
 
 module.exports = router;
