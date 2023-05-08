@@ -1,0 +1,32 @@
+version: '3.9'
+
+volumes:
+  local_postgres_data: {}
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/local/node/Dockerfile
+    container_name: server_tarea_4
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - "3000:3000"
+  
+  postgres:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - "5433:5432"
