@@ -2,7 +2,7 @@ const {
   Model,
 } = require('sequelize');
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   class Like extends Model {
     /**
      * Helper method for defining associations.
@@ -23,6 +23,10 @@ module.exports = (sequelize) => {
     }
   }
   Like.init({
+    isRejection: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   }, {
     sequelize,
     modelName: 'Like',

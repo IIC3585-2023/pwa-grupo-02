@@ -31,11 +31,22 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/:id/people', async (req, res) => {
+  const likedUserIds = await Like.findAll({
+    where: {
+      userId: req.params.id,
+    },
+    attributes: ['likedUserId'],
+  });
+
   const users = await User.findAll({
     where: { id: { [Op.not]: req.params.id } },
   });
 
-  res.json(users);
+  const filteredUsers = users.filter(
+    (user) => !likedUserIds.find((like) => like.likedUserId === user.id),
+  );
+
+  res.json(filteredUsers);
 });
 
 router.get('/:id/likes', async (req, res) => {
@@ -85,6 +96,7 @@ router.post('/:id/likes', async (req, res) => {
     const like = await Like.create({
       userId: user.id,
       likedUserId: likedUser.id,
+      isRejection: req.body.isRejection,
     });
 
     res.json(like);
@@ -137,12 +149,14 @@ router.get('/:id/matches', async (req, res) => {
     const likes = await Like.findAll({
       where: {
         likedUserId: req.params.id,
+        isRejection: false,
       },
     });
 
     const liked = await Like.findAll({
       where: {
         userId: req.params.id,
+        isRejection: false,
       },
     });
 
