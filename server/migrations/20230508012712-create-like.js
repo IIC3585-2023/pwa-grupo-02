@@ -8,6 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      isRejection: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       userId: {
         type: Sequelize.INTEGER,
         references: {
