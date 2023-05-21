@@ -22,7 +22,8 @@ self.addEventListener('fetch', event => {
 
 async function cacheData(request) {
     const cachedResponse = await caches.match(request);
-    return cachedResponse || fetch(request);
+    if(cachedResponse) return cachedResponse;
+    return await fetch(request);
 }
 
 async function networkFirst(request) {
