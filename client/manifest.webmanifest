@@ -1,0 +1,14 @@
+{
+    "name": "Tinder",
+    "short_name": "Tinder",
+    "theme_color": "#2196f3",
+    "background_color": "#2196f3",
+    "display": "standalone",
+    "start_url": "/index.html",
+    "icons": [{
+        "src": "tinder.png",
+          "sizes": "128x128",
+          "type": "image/png" 
+        }
+    ]
+  }
