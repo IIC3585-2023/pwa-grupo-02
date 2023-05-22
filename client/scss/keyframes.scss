@@ -1,0 +1,9 @@
+@keyframes fadeOut{
+    from{ opacity: 1; }
+    to{   opacity: 0; }
+}
+@keyframes pumPum{
+    0%{     transform: scale(1);}
+    50%{    transform: scale(1.2);}
+    100%{   transform: scale(1);}
+}
