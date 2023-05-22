@@ -26,6 +26,9 @@ module.exports = {
       img_urls: {
         type: Sequelize.ARRAY(Sequelize.STRING),
       },
+      token: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

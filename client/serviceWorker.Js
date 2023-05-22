@@ -1,7 +1,7 @@
 const staticAssets = [
-    './',
     './style.css',
-    './main.js'
+    './main.js',
+    './firebase-config.js',
 ];
 
 self.addEventListener('install', async event => {

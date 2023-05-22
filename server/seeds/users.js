@@ -1,4 +1,5 @@
 const factory = require('../models/factories/index.js');
+const { faker } = require('@faker-js/faker/locale/en_US');
 const { User, Like, Message } = require('../models/index.js');
 
 const seedUsers = {
@@ -12,10 +13,11 @@ const seedUsers = {
       id: 1,
       email: 'test@mail.com',
       password: 'password',
+      img_urls: [faker.image.avatar, faker.image.avatar, faker.image.avatar, faker.image.avatar],
     })];
 
     for (let i = 1; i < 40; i += 1) {
-      users.push(factory.create('User', { id: i + 1 }));
+      users.push(factory.create('User', { id: i + 1, img_urls: [faker.image.avatar, faker.image.avatar, faker.image.avatar, faker.image.avatar] }));
     }
 
     await Promise.all(users);
