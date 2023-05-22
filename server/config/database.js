@@ -14,6 +14,12 @@ const config = {
     database: 'database_test',
     host: '127.0.0.1',
     dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: false,
+        rejectUnauthorized: false,
+      },
+    },
   },
   production: {
     username: process.env.POSTGRES_USER,
@@ -21,6 +27,12 @@ const config = {
     database: process.env.POSTGRES_DB,
     host: process.env.POSTGRES_HOST,
     dialect: process.env.DB_DIALECT || 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: false,
+        rejectUnauthorized: false,
+      },
+    },
   },
 };
 
