@@ -26,6 +26,7 @@ async function fetchTrending() {
 
 // Obtener referencias a los elementos del DOM
 const container = document.querySelector('.container');
+const matches = document.querySelector('.matches');
 const buttonsDiv = document.getElementsByClassName('buttons')[0];
 
 // Agregar eventos de clic a los botones de "X" y "corazón"
@@ -50,6 +51,7 @@ function handleButtonClick(event) {
 
 // Función para renderizar la tarjeta de usuario actual en el DOM
 function renderUserCard(index) {
+  if (window.location.href.includes('index')) {
   const user = data[index];
   const html = `
     <div class="card">
@@ -59,7 +61,7 @@ function renderUserCard(index) {
           <div class="name">${user.firstName} ${user.lastName}</div>
           <div class="local">
             <i class="fas fa-map-marker-alt"></i>
-            <span>a 20 kilómetros desde aquí</span>
+            <span>a ${(Math.random() * 21).toFixed(1)} kilómetros de distancia</span>
           </div>
         </div>
       </div>
@@ -67,7 +69,35 @@ function renderUserCard(index) {
   `;
 
   container.innerHTML = html;
+  }
 }
+
+
+// // Función para renderizar las líneas de los matches
+// function renderDataLines(data) {
+//   console.log('renderDataLines', data);
+//   if (window.location.href.includes('messages')) {
+//     let html = '';
+
+//     for (let i = 0; i < data.length; i++) {
+//       const user = data[i];
+
+//       html += `
+//       <div class="messages">
+//         <div class="avatar">
+//           <img src="${user.img_urls[0]}" alt="${user.firstName}" />
+//         </div>
+//         <div class="message">
+//           <div class="user">${user.firstName} ${user.lastName}</div>
+//           <div class="text">Lorem ipsum dolor sit amet consectetur adipisicing</div>
+//         </div>
+//       </div>
+//       `;
+//     }
+
+//     matches.innerHTML = html;
+//   }
+// }
 
 // Función para renderizar la siguiente tarjeta de usuario
 function renderNextUserCard() {
@@ -78,3 +108,29 @@ function renderNextUserCard() {
     console.log('No hay más usuarios');
   }
 }
+
+document.getElementById("messages").addEventListener("click", function(event) {
+  event.preventDefault(); // Evita que se siga la URL del enlace
+  
+  // Redirige a messages.html
+  window.location.href = "messages.html";
+});
+
+document.getElementById("index").addEventListener("click", function(event) {
+  event.preventDefault(); // Evita que se siga la URL del enlace
+  
+  // Redirige a messages.html
+  window.location.href = "index.html";
+});
+
+
+async function toggleMenu() {
+  var navbarMenu = document.getElementById("navbar-menu");
+  if (navbarMenu.style.display === "block") {
+    navbarMenu.style.display = "none";
+  } else {
+    navbarMenu.style.display = "block";
+  }
+}
+
+document.getElementById("toggleButton").addEventListener("click", toggleMenu);

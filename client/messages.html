@@ -16,9 +16,10 @@
 			rel="stylesheet"
 			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
 		/>
-        <main class="main">
-            <script src="firebase-config.js" type = "module"></script>
-            <script src="main.js" type = "module"></script>
+		<main class="main">
+			<script src="firebase-config.js" type = "module"></script>
+			<script src="main.js" type = "module"></script>
+
 </head>
 <body>
     <div id="app"></div>
@@ -60,24 +61,22 @@
 
 
 
-        <section class="swipea">
-            <div class="content">
-				<div class="card">
-					<div class="container"></div>
+
+
+        <div class="container">
+			<div class="side">
+
+				<div class="menu">
+					<ul>
+						<li class="active">Matches</li>
+					</ul>
 				</div>
-				<div class="buttons">
-					<div class="no">
-						<i class="fas fa-times"></i>
-					</div>
-					<div class="star">
-						<i class="fas fa-star fa"></i>
-					</div>
-					<div class="heart">
-						<i class="fas fa-heart"></i>
-					</div>
-				</div>
+				<div id="matches"></div>
+			</div>
+        		<section class="swipea"></section>
 			</div>
         </section>
+        </div>
         
     <!-- <div class="preload">
         <img class="preload__img" src="assets/flame.svg" alt="Tinder">
