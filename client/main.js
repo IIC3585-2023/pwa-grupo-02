@@ -4,8 +4,8 @@ window.addEventListener('load', async e => {
     try {
         await navigator.serviceWorker.register('serviceWorker.js');
         console.log('Service worker active');
-        await navigator.serviceWorker.register('./firebase/firebase-messaging-sw.js')
-        console.log('Service worker active');
+        await navigator.serviceWorker.register('firebase/firebase-messaging-sw.js')
+        console.log('Service worker active 2');
     } catch (error) {
         console.log('SW failed');
     }

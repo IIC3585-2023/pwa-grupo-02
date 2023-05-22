@@ -1,6 +1,51 @@
 const { Router } = require('express');
 const { Op } = require('sequelize');
 const { User, Like, Message } = require('../models');
+const admin = require('../firebase');
+
+function sendNotification(user, message) {
+  const registrationToken = user.token;
+
+  if (!registrationToken) {
+    return;
+  }
+
+  const payload = {
+    notification: {
+      title: message.title,
+      body: message.body,
+    },
+    token: registrationToken,
+  };
+
+  admin.messaging().send(payload)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log('Successfully sent message:', response);
+    })
+    .catch((error) => {
+      console.log('Error sending message:', error);
+    });
+}
+
+function checkMatch(user1, user2) {
+  console.log('Checking match');
+  console.log(user1.likes);
+  console.log(user2.likes);
+  const user1LikedUser2 = user1.likes.find((like) => like.likedUserId === user2.id);
+  const user2LikedUser1 = user2.likes.find((like) => like.likedUserId === user1.id);
+
+  if (!user1LikedUser2 || !user2LikedUser1) {
+    return;
+  }
+  const message = {
+    title: 'New match!',
+    body: 'You have a new match 😍',
+  };
+
+  sendNotification(user1, message);
+  sendNotification(user2, message);
+}
 
 const router = Router();
 
@@ -49,6 +94,24 @@ router.get('/:id/people', async (req, res) => {
   res.json(filteredUsers);
 });
 
+router.post('/:id/token', async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    user.token = req.body.token;
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    res.json({ error: 'Something went wrong' });
+  }
+});
+
 router.get('/:id/likes', async (req, res) => {
   const user = await User.findByPk(req.params.id, {
     include: [
@@ -91,13 +154,24 @@ router.get('/:id/liked', async (req, res) => {
 
 router.post('/:id/likes', async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
-    const likedUser = await User.findByPk(req.body.likedUserId);
+    const user = await User.findByPk(req.params.id, {
+      include: [
+        {
+          association: 'likes',
+        }],
+    });
+    const likedUser = await User.findByPk(req.body.likedUserId, {
+      include: [
+        {
+          association: 'likes',
+        }],
+    });
     const like = await Like.create({
       userId: user.id,
       likedUserId: likedUser.id,
       isRejection: req.body.isRejection,
     });
+    checkMatch(user, likedUser);
 
     res.json(like);
   } catch (error) {
@@ -135,6 +209,14 @@ router.post('/:id/messages/:userId', async (req, res) => {
       receiverUserId: req.params.userId,
       message: req.body.message,
     });
+
+    const user = await User.findByPk(req.params.userId);
+    const messagePayload = {
+      title: 'New message! 💌',
+      body: `${user.firstName}: ${message.message}`,
+      icon: 'https://firebasestorage.googleapis.com/v0/b/tarea-4-pwa.appspot.com/o/tinder.svg?alt=media&token=1061def6-9a2d-41f7-af3d-f9c6af54f7b1',
+    };
+    sendNotification(user, messagePayload);
 
     res.json(message);
   } catch (error) {

@@ -18,15 +18,13 @@ const messaging = getMessaging(app);
 const listen = async () => {
   try {
     const serviceWorkerRegistration = await navigator.serviceWorker.register('./firebase/firebase-messaging-sw.js');
-    console.log("register: ", serviceWorkerRegistration);
+    let token = localStorage.getItem('token')
     // Get token only if it does not exist in local storage
-    if (localStorage.getItem('token') === null) {
-        console.log("token:");
-      const token = await getToken(messaging, {
+    if (token === null) {
+      token = await getToken(messaging, {
         vapidKey: "BNLTyeN4Td94qy9BSjEPUu34ttW30qsIJgYeilyYBLM8mQpc_u66BQj25edCo2Nd-WF-dtAWnQmdLTLE7-F-qbw",
         serviceWorkerRegistration,
       });
-      console.log(token);
       localStorage.setItem('token', token);
     //   await fetch('https://backend-pwa-g5.onrender.com/subscribe', {
     //     method: 'POST',
@@ -36,15 +34,20 @@ const listen = async () => {
     //     },
     //   });
     }
+    console.log(token);
     onMessage(messaging, ({notification}) => {
       // console.log('Message received. ', payload);
       console.log('Message received. ', notification)
-      const {title, body, icon} = notification;
+      const {title, body } = notification;
       serviceWorkerRegistration.showNotification(title, {
         body,
-        icon,
       });
+      const not = new Notification(title, { body }).onshow = () => {
+        console.log('Notificacion mostrada');
+        };
+      console.log(not)
     });
+    console.log("Notificaciones soportadas");
   } catch (e) {
     console.log('ERROR: ', e)
     console.log("Notificaciones no soportadas");
